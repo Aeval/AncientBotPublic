@@ -1,0 +1,22 @@
+{
+  "name": "ancientbot",
+  "version": "1.0.0",
+  "description": "Dota stat retrieval and display bot for discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aeval/AncientBot.git"
+  },
+  "author": "Fisher",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Aeval/AncientBot/issues"
+  },
+  "homepage": "https://github.com/Aeval/AncientBot#readme",
+  "dependencies": {
+    "discord.js": "^11.3.2"
+  }
+}
