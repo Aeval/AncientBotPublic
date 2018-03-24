@@ -6,6 +6,7 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync('./commands');
+const snekfetch = require('snekfetch');
 
 for(const file of commandFiles) {
   const command = require(`./commands/${file}`);
@@ -20,6 +21,31 @@ const cooldowns = new Discord.Collection();
 //Log to the console to know the bot is online
 client.on('ready', () => {
     console.log('Ready!');
+    let num = Math.floor(Math.random() * 8);
+    if(num === 1) {
+      client.user.setActivity('for last hits', {type: 'WATCHING'});
+  }
+    if(num === 2) {
+      client.user.setActivity('Kevin Godec', {type: 'LISTENING'});
+  }
+    if (num === 3) {
+      client.user.setActivity('your last match', {type: 'WATCHING'});
+  }
+    if (num === 4) {
+      client.user.setActivity('bad callouts', {type: 'LISTENING'});
+  }
+    if (num === 5) {
+      client.user.setActivity('for ward placement', {type: 'WATCHING'});
+  }
+    if (num === 6) {
+      client.user.setActivity('you take high ground', {type: 'WATCHING'});
+  }
+    if (num === 7) {
+      client.user.setActivity('the runes', {type: 'WATCHING'});
+  }
+    if (num === 0) {
+      client.user.setActivity('your draft picks', {type: 'WATCHING'});
+  }
 });
 
 //Message Event Listening - Commands in Commands Folder
@@ -57,7 +83,7 @@ client.on('message', message => {
 
     if (now < expirationTime) {
       const timeLeft = (expirationTime - now) / 1000;
-      return message.reply(`Please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${command.name}\` command again!` );
+      return message.reply(`please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${command.name}\` command again!` );
     }
 
     timestamps.set(message.author.id, now);
