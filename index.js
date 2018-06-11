@@ -21,7 +21,7 @@ const cooldowns = new Discord.Collection();
 //Log to the console to know the bot is online
 client.on('ready', () => {
     console.log('Ready!');
-    let num = Math.floor(Math.random() * 8);
+    let num = Math.floor(Math.random() * 9);
     if(num === 1) {
       client.user.setActivity('for last hits', {type: 'WATCHING'});
   }
@@ -42,6 +42,9 @@ client.on('ready', () => {
   }
     if (num === 7) {
       client.user.setActivity('the runes', {type: 'WATCHING'});
+  }
+    if (num === 8) {
+    client.user.setActivity('you respawn...again', {type: 'WATCHING'});
   }
     if (num === 0) {
       client.user.setActivity('your draft picks', {type: 'WATCHING'});
