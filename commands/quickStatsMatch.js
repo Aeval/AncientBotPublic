@@ -1,4 +1,4 @@
-module.exports = {
+/**module.exports = {
   name: 'match',
   description: 'Quick Stats by Match ID',
   guildOnly: true,
@@ -32,5 +32,5 @@ module.exports = {
         .addFooter('Brought to you by AncientBot!');
 
      message.channel.send(embed);
-  },
-};
+  }
+};**/

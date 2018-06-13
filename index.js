@@ -1,22 +1,8 @@
-const fs = require('fs');
 const Discord = require('discord.js');
-const {prefix,token} = require('./config.json');
-
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
+const {prefix,token} = require('./config.json');
+const snekfetch = require('./node_modules/discord.js/node_modules/snekfetch');
 
-const commandFiles = fs.readdirSync('./commands');
-const snekfetch = require('snekfetch');
-
-for(const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  //set a new item in the Collection
-  //with the key as the command name and the value as the exported module
-  client.commands.set(command.name, command);
-}
-
-//Add cooldowns
-const cooldowns = new Discord.Collection();
 
 //Log to the console to know the bot is online
 client.on('ready', () => {
@@ -51,54 +37,71 @@ client.on('ready', () => {
   }
 });
 
-//Message Event Listening - Commands in Commands Folder
-client.on('message', message => {
+//Message Event Listening
+client.on('message', async message => {
+
   //Make sure message start with the prefix and that the author isn't a bot
   if(!message.content.startsWith(prefix) || message.author.bot) return;
+
   //Seperate command and arguments for ease of use
   const args = message.content.slice(prefix.length).split(/ +/);
-  const commandName = args.shift().toLowerCase();
+  const command = args.shift().toLowerCase();
 
-  //Check if command exists
-  if(!client.commands.has(commandName)) return;
+  if(command === '')return;
 
-  const command = client.commands.get(commandName);
+  if(command === "ping") {
 
-  //Check the message is sent in a server chat channel
-  if(command.guildOnly && message.channel.type !== 'text') {
-    return message.reply('I can\'t execute that command in a DM!');
+    const m =  await message.channel.send("Ping?");
+    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
   }
 
-  //check for cooldowns
-  if(!cooldowns.has(command.name)) {
-    cooldowns.set(command.name, new Discord.Collection());
-  }
+  if(command === 'stats') {
+    const {body} = await snekfetch.get(`https://api.opendota.com/api/matches/${args[0]}`);
+    const durMinutes = Math.floor(body.duration / 60);
+    const durSeconds = body.duration - durMinutes * 60;
+    const fbMin = Math.floor(body.first_blood_time/60);
+    const fbSec = body.first_blood_time - fbMin * 60;
 
-  const now = Date.now();
-  const timestamps = cooldowns.get(command.name);
-  const cooldownAmount = (command.cooldown || 3) * 1000;
+    
+    if(body.error === 'Not Found') {
+      return message.channel.send(`No match found with the ID: ${args[0]}! Please make sure you entered the right ID!`);
+    }
+     
+    if(body.radiant_win === false){
 
-  if(!timestamps.has(message.author.id)) {
-    timestamps.set(message.author.id, now);
-    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-  }else {
-    const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+      const embed = new Discord.RichEmbed()
+        .setColor('#ff0000')
+        .setTitle(`Match: ${body.match_id}`)
+        .setDescription('**Winner**: __Dire__')
+        .setThumbnail('https://orig00.deviantart.net/1d5e/f/2016/320/9/1/dire_icon_appstyle_by_ellierebeccathorpe-daoloi7.png')
+        .setURL(body.replay_url)
+        .addField('Radiant:', `${body.radiant_score} Kills`,true)
+        .addField('Dire:', `${body.dire_score} Kills`,true)
+        .addField('First Blood', `At: ${fbMin} minutes and ${fbSec} seconds!`)
+        .addField('Game Duration:', `${durMinutes} minutes and ${durSeconds} seconds!`)
+        .setFooter('Brought to you by AncientBot!');
 
-    if (now < expirationTime) {
-      const timeLeft = (expirationTime - now) / 1000;
-      return message.reply(`please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${command.name}\` command again!` );
+      message.channel.send(embed);
+
+    }else{
+
+      const embed = new Discord.RichEmbed()
+        .setColor('#33cc33')
+        .setTitle(`Match: ${body.match_id}`)
+        .setDescription('**Winner**: __Radiant__')
+        .setThumbnail('https://orig00.deviantart.net/2638/f/2016/320/7/c/radiant_icon_appstyle_by_ellierebeccathorpe-daolomc.png')
+        .setURL(body.replay_url)
+        .addField('Radiant:', `${body.radiant_score} Kills`,true)
+        .addField('Dire:', `${body.dire_score} Kills`,true)
+        .addField('First Blood', `At: ${fbMin} minutes and ${fbSec} seconds!`)
+        .addField('Game Duration:', `${durMinutes} minutes and ${durSeconds} seconds!`)
+        .setFooter('Brought to you by AncientBot!');
+
+      message.channel.send(embed);
+
     }
 
-    timestamps.set(message.author.id, now);
-    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-  }
-
-  try {
-    command.execute(message, args);
-  }
-  catch(error) {
-    console.log(error);
-    message.reply('Your Ancient is under attack!');
+     
   }
 });
 
