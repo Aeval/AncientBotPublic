@@ -79,7 +79,7 @@ client.on('message', async message => {
         .addField('Dire:', `${body.dire_score} Kills`,true)
         .addField('First Blood', `At: ${fbMin} minutes and ${fbSec} seconds!`)
         .addField('Game Duration:', `${durMinutes} minutes and ${durSeconds} seconds!`)
-        .setFooter('Brought to you by AncientBot!');
+        .setFooter('Brought to you by AncientBot!','https://i.pinimg.com/originals/c1/ec/da/c1ecda477bc92b6ecfc533b64d4a0337.png');
 
       message.channel.send(embed);
 
@@ -95,7 +95,7 @@ client.on('message', async message => {
         .addField('Dire:', `${body.dire_score} Kills`,true)
         .addField('First Blood', `At: ${fbMin} minutes and ${fbSec} seconds!`)
         .addField('Game Duration:', `${durMinutes} minutes and ${durSeconds} seconds!`)
-        .setFooter('Brought to you by AncientBot!');
+        .setFooter('Brought to you by AncientBot!','https://i.pinimg.com/originals/c1/ec/da/c1ecda477bc92b6ecfc533b64d4a0337.png');
 
       message.channel.send(embed);
 
