@@ -4,8 +4,10 @@ This bot is meant for use in discords within the Dota 2 community.
 
 In this version it has:
 
-!ping: Displays server and API ping
+<p>!ping: Displays server and API ping</p>
 
-!stats [match ID #]: Returns very basic stats about the game in a neat little embed complete with the winning team's symbol*
+<p>!stats [match ID #]: Returns very basic stats about the game in a neat little embed complete with the winning team's symbol</p>
 
-Symbols for Radiant and Dire are wonderfully done by Ellie Rebecca Thorpe, so a big thank you to her!
+
+
+<b>Symbols for Radiant and Dire are wonderfully done by Ellie Rebecca Thorpe, so a big thank you to her!</b>
