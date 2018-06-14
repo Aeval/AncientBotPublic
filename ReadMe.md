@@ -11,3 +11,5 @@ In this version it has:
 
 
 **Symbols for Radiant and Dire are wonderfully done by _Ellie Rebecca Thorpe_, so a big thank you to her!**
+
+**Click [HERE](https://bit.ly/2HPJiNE) to add the bot to your channel!**
