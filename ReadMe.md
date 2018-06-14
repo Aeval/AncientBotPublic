@@ -1,4 +1,4 @@
-<h1>AncientBot Beta 0.1.0
+<h1>AncientBot Beta 0.1.0</h1>
 
 This bot is meant for use in discords within the Dota 2 community.
 
