@@ -103,6 +103,26 @@ client.on('message', async message => {
 
      
   }
+
+  if(command === 'matches'){
+    const {search} = await snekfetch.get(`https://api.opendota.com/api/search?q=${args[0]}`);
+    const {player} = await snekfetch.get(`https://api.opendota.com/api/players/${search.account_id}`);
+    
+    const embed = new Discord.RichEmbed()
+        .setColor('#33cc33')
+        .setTitle(`Player: ${search.personaname}`)
+        .setDescription(`Solo Rank: ${player.solo_competitive_rank} ${player.rank_tier}`)
+        .setThumbnail(search.avatarfull)
+        .setURL(player.profile.profileurl)
+        .addField('Radiant:', `${body.radiant_score} Kills`,true)
+        .addField('Dire:', `${body.dire_score} Kills`,true)
+        .addField('First Blood', `At: ${fbMin} minutes and ${fbSec} seconds!`)
+        .addField('Game Duration:', `${durMinutes} minutes and ${durSeconds} seconds!`)
+        .setFooter('Brought to you by AncientBot!','https://i.pinimg.com/originals/c1/ec/da/c1ecda477bc92b6ecfc533b64d4a0337.png');
+
+      message.channel.send(embed);
+
+  }
 });
 
 client.login(token);
