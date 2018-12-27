@@ -6,7 +6,9 @@ In this version it has:
 
 * !ping: Displays server and API ping
 
-* !stats [match ID #]: Returns very basic stats about the game in a neat little embed complete with the winning team's symbol
+* !match [match ID #]: Returns very basic stats about the game in a neat little embed complete with the winning team's symbol
+
+* !recent [match ID # or Player Username]: Returns a summary of the each of the last 5 games played by the user provided
 
 
 
