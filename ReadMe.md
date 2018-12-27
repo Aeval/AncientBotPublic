@@ -14,4 +14,4 @@ In this version it has:
 
 **Symbols for Radiant and Dire are wonderfully done by _Ellie Rebecca Thorpe_, so a big thank you to her!**
 
-**Click [HERE](http://bit.ly/getAncient) to add the bot to your channel!**
+**Click [HERE](https://discordapp.com/oauth2/authorize?client_id=527660977760501760&scope=bot&permissions=1) to add the bot to your channel!**
