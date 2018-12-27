@@ -108,10 +108,13 @@ client.on('message', async message => {
     const body = await snekfetch.get(`https://api.opendota.com/api/search?q=${args[0]}`);
     const userJson = JSON.parse(body.text)
     const player = await snekfetch.get(`https://api.opendota.com/api/players/${userJson[0].account_id}`);
+    const playerID = userJson[0].account_id;
+    const playerJson = JSON.parse(player.text)
     const wl = await snekfetch.get(`https://api.opendota.com/api/players/${userJson[0].account_id}/wl?limit=20&date=30`);
     const matches = await snekfetch.get(`https://api.opendota.com/api/players/${userJson[0].account_id}/recentMatches`);
     const matchJson = JSON.parse(matches.text)
-    const rank = player.rank_tier;
+    const heroes = await snekfetch.get(`https://api.opendota.com/api/heroes`);
+    const rank = playerJson.rank_tier;
     const winrate = Math.floor((wl.win / (wl.win + wl.lose)) * 100);
     var medalInd = Math.floor((rank / 1) % 10);
     var medal = '';
@@ -151,8 +154,10 @@ client.on('message', async message => {
     for (var i = 0; i < 5; i++) {
       const winner = matchJson[i].radiant_win ? "Radiant" : "Dire";
       const matchid = matchJson[i].match_id;
+      const heroID = matchJson[i].hero_id;
       const team = (matchJson[i].player_slot > 127) ? "Dire" : "Radiant";
       const icon = matchJson[i].radiant_win ? "https://orig00.deviantart.net/2638/f/2016/320/7/c/radiant_icon_appstyle_by_ellierebeccathorpe-daolomc.png" : "https://orig00.deviantart.net/1d5e/f/2016/320/9/1/dire_icon_appstyle_by_ellierebeccathorpe-daoloi7.png";
+      const matchHero = getHero(heroID);
       var WorL = "";
       var color = "";
       if (winner == team) {
@@ -161,6 +166,16 @@ client.on('message', async message => {
       } else {
         WorL = "Defeat!";
         color = "#ff0000";
+      }
+
+      function getHero(heroID) {
+        const heroesJson = JSON.parse(heroes.text);
+
+        for (var i = 0; i < heroesJson.length; i++) {
+          if (heroesJson[i].id == heroID){
+            return heroesJson[i].localized_name
+          }
+        }
       }
 
       switch (matchJson[i].lane_role) {
@@ -196,12 +211,13 @@ client.on('message', async message => {
       const embed = new Discord.RichEmbed()
         .setColor(color)
         .setTitle(`Match: ${matchid}`)
-        .setDescription(`**Player**: ${userJson[0].personaname} **Solo Rank**: ${medal}`)
+        .setDescription(`**Player**: ${userJson[0].personaname}  **Solo Rank**: ${medal}`)
         .setThumbnail(userJson[0].avatarfull)
-        //.setURL(player.profile.profileurl)
+        .setURL(`https://www.opendota.com/matches/${matchJson[i].match_id}`)
         .addField('Your Team:', `${team}`, true)
         .addField('Result:', `${WorL}`, true)
-        .addField('K/D/A', `${matchJson[i].kills}/${matchJson[i].deaths}/${matchJson[i].assists}`)
+        .addField('Hero:', `${matchHero}`, true)
+        .addField('K/D/A', `${matchJson[i].kills}/${matchJson[i].deaths}/${matchJson[i].assists}`, true)
         .addField('XPM:', `${matchJson[i].xp_per_min}`, true)
         .addField('GPM:', `${matchJson[i].gold_per_min}`, true)
         .addField('Lane:', `${role}`, true)
