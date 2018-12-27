@@ -123,13 +123,13 @@ client.on('message', async message => {
       var matchid = matchJson[i].match_id;
       var team = (matchJson[i].player_slot > 127)?"Dire":"Radiant";
       var icon = matchJson[i].radiant_win?"https://orig00.deviantart.net/2638/f/2016/320/7/c/radiant_icon_appstyle_by_ellierebeccathorpe-daolomc.png":"https://orig00.deviantart.net/1d5e/f/2016/320/9/1/dire_icon_appstyle_by_ellierebeccathorpe-daoloi7.png";
-      var WorL = '';
-      var color = '';
+      var WorL = "";
+      var color = "";
       if(winner == team){
-        WorL = 'Victory!';
+        WorL = "Victory!";
         color = "#33cc33";
       }else{
-        WorL = 'Defeat!';
+        WorL = "Defeat!";
         color = "#ff0000";
       }
       
