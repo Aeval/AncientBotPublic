@@ -105,24 +105,38 @@ client.on('message', async message => {
   }
 
   if(command === 'recent'){
-    const {body} = await snekfetch.get(`https://api.opendota.com/api/search?q=${args[0]}`);
-    const {player} = await snekfetch.get(`https://api.opendota.com/api/players/${body[0].account_id}`);
-    const {wl} = await snekfetch.get(`https://api.opendota.com/api/players/${body[0].account_id}/wl?limit=20&date=30`);
-    const {matches} = await snekfetch.get(`https://api.opendota.com/api/players/${body[0].account_id}/recentMatches`);
-    const rank = (player.leaderboard_rank)?`${player.leaderboard_rank} ${player.rank_tier}`:"Unranked";
-    const winrate = Math.floor((wl.win/(wl.win+wl.lose))*100);
+    var body = await snekfetch.get(`https://api.opendota.com/api/search?q=${args[0]}`);
+    var userJson = JSON.parse(body.text)
+    var player = await snekfetch.get(`https://api.opendota.com/api/players/${userJson[0].account_id}`);
+    var wl = await snekfetch.get(`https://api.opendota.com/api/players/${userJson[0].account_id}/wl?limit=20&date=30`);
+    var matches = await snekfetch.get(`https://api.opendota.com/api/players/${userJson[0].account_id}/recentMatches`);
+    var matchJson = JSON.parse(matches.text)
+    var rank = player.rank_tier;
+    var winrate = Math.floor((wl.win/(wl.win+wl.lose))*100);
 
-   if(body[0].error === '404 Not Found') {
+    if(body.error === '404 Not Found') {
       return message.channel.send(`No player found with the name: ${args[0]}! Please make sure you entered the right name!`);
     }
 
     for(var i = 0; i < 5; i++){
-      const winner = (matches[i].radiant_win)?"Radiant":"Dire";
-      const color = (matches[i].radiant_win)?"#33cc33":"#ff0000";
-      const matchid = matches[i].match_id;
-      const team = (matches[i].player_slot > 127)?"Dire":"Radiant";
-      const icon = (matches[i].radiant_win)?"https://orig00.deviantart.net/2638/f/2016/320/7/c/radiant_icon_appstyle_by_ellierebeccathorpe-daolomc.png":"https://orig00.deviantart.net/1d5e/f/2016/320/9/1/dire_icon_appstyle_by_ellierebeccathorpe-daoloi7.png";
-      switch(matches[i].lane_role){
+      var winner = matchJson[i].radiant_win?"Radiant":"Dire";
+      var WorL = '';
+      if(winner == team){
+        WorL = 'Victory!';
+      }else{
+        WorL = 'Defeat!';
+      }
+      var color = '';
+      if(WorL == 'Victory!'){
+        color = "#33cc33";
+      }else{
+        color = "#ff0000";
+      }
+      var matchid = matchJson[i].match_id;
+      var team = (matchJson[i].player_slot > 127)?"Dire":"Radiant";
+      var icon = matchJson[i].radiant_win?"https://orig00.deviantart.net/2638/f/2016/320/7/c/radiant_icon_appstyle_by_ellierebeccathorpe-daolomc.png":"https://orig00.deviantart.net/1d5e/f/2016/320/9/1/dire_icon_appstyle_by_ellierebeccathorpe-daoloi7.png";
+
+      switch(matchJson[i].lane_role){
         default:
           role = "No Lane";
           break;
@@ -138,7 +152,7 @@ client.on('message', async message => {
         case 4:
           role = "Jungle";
       }
-      switch(matches[i].skill){
+      switch(matchJson[i].skill){
         default:
           skill = "Unknown";
           break;
@@ -155,14 +169,14 @@ client.on('message', async message => {
       const embed = new Discord.RichEmbed()
           .setColor(color)
           .setTitle(`Match: ${matchid}`)
-          .setDescription(`**Player**: ${body[0].personaname} **Win Rate**: ${winrate} **Solo Rank**: ${rank}`)
-          .setThumbnail(body[0].avatarfull)
+          .setDescription(`**Player**: ${userJson[0].personaname} **Win Rate**: ${winrate} **Solo Rank**: ${rank}`)
+          .setThumbnail(userJson[0].avatarfull)
           //.setURL(player.profile.profileurl)
           .addField('Your Team:', `${team}`,true)
-          .addField('Result:',`${winner} wins!`,true)
-          .addField('K/D/A', `${matches[i].kills}/${matches[i].deaths}/${matches[i].assists}`)
-          .addField('XPM:', `${matches[i].xp_per_min}`,true)
-          .addField('GPM:', `${matches[i].gold_per_min}`,true)
+          .addField('Result:',`${WorL}`,true)
+          .addField('K/D/A', `${matchJson[i].kills}/${matchJson[i].deaths}/${matchJson[i].assists}`)
+          .addField('XPM:', `${matchJson[i].xp_per_min}`,true)
+          .addField('GPM:', `${matchJson[i].gold_per_min}`,true)
           .addField('Lane:', `${role}`,true)
           .addField('Skill:', `${skill}`,true)
           .setImage(icon)
