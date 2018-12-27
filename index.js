@@ -172,7 +172,7 @@ client.on('message', async message => {
         const heroesJson = JSON.parse(heroes.text);
 
         for (var i = 0; i < heroesJson.length; i++) {
-          if (heroesJson[i].id == heroID){
+          if (heroesJson[i].id == heroID) {
             return heroesJson[i].localized_name
           }
         }
