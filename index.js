@@ -100,8 +100,6 @@ client.on('message', async message => {
       message.channel.send(embed);
 
     }
-    message.channel.send(`${body.match_id}`);
-
   }
 
   if (command === 'recent') {
