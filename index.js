@@ -113,6 +113,36 @@ client.on('message', async message => {
     const matchJson = JSON.parse(matches.text)
     const rank = player.rank_tier;
     const winrate = Math.floor((wl.win / (wl.win + wl.lose)) * 100);
+    var medalInd = Math.floor((rank / 1) % 10);
+    var medal = '';
+    switch (medalInd) {
+      default:
+        medal = "Uncalibrated";
+        break;
+      case 1:
+        medal = "Herald";
+        break;
+      case 2:
+        medal = "Guardian";
+        break;
+      case 3:
+        medal = "Crusader";
+        break;
+      case 4:
+        medal = "Archon";
+        break;
+      case 5:
+        medal = "Legend";
+        break;
+      case 6:
+        medal = "Ancient";
+        break;
+      case 7:
+        medal = "Divine";
+        break;
+      case 8:
+        medal = "Immortal";
+    }
 
     if (body.error === '404 Not Found') {
       return message.channel.send(`No player found with the name: ${args[0]}! Please make sure you entered the right name!`);
@@ -166,7 +196,7 @@ client.on('message', async message => {
       const embed = new Discord.RichEmbed()
         .setColor(color)
         .setTitle(`Match: ${matchid}`)
-        .setDescription(`**Player**: ${userJson[0].personaname} **Win Rate**: ${winrate} **Solo Rank**: ${rank}`)
+        .setDescription(`**Player**: ${userJson[0].personaname} **Solo Rank**: ${medal}`)
         .setThumbnail(userJson[0].avatarfull)
         //.setURL(player.profile.profileurl)
         .addField('Your Team:', `${team}`, true)
